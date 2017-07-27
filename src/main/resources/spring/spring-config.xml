@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:beans="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:cache="http://www.springframework.org/schema/cache"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xmlns:util="http://www.springframework.org/schema/util"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-autowire="byName">
+	<!-- 启用aop切面编程注解。 proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用-->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<!-- 自动搜索需要注入的类 -->
+	<context:component-scan base-package="com.cc.cocktail.mvc.service" />
+	<context:component-scan base-package="com.cc.cocktail.domain" />
+	<context:component-scan base-package="com.cc.cocktail.web.cas" />
+    
+    <!-- 引入配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="order" value="1" />
+    	<property name="location" value="classpath:app.properties" />
+    </bean>
+    
+    <!-- 启用缓存注解驱动 
+    <cache:annotation-driven cache-manager="springCacheManager"/>
+    -->
+	
+	<!-- 引入安全框架shiro 
+	<beans:import resource="classpath:shiro/spring-config-shiro-cas.xml"/>
+	-->
+	
+	<!-- 引入数据库相关 -->
+	<beans:import resource="classpath:ds/ds-dbcp.xml"/>
+	
+</beans>

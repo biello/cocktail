@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-autowire="byName">
+
+	<!-- 缓存管理器 
+	<bean id="shiroCacheManager" class="org.walkframework.shiro.cache.ShiroCacheManager">
+		<property name="cacheManager" ref="springCacheManager" />
+	</bean>
+	-->
+	
+	<!-- 基于cas实现的realm -->
+	<bean id="casRealm" class="com.ai.wosales.web.cas.realm.SsoCasRealm">
+		<property name="userService" ref="casUserService"/><!--注入用户信息服务 -->
+		<property name="cachingEnabled" value="true" /><!-- 认证信息与授权信息缓存开关 -->
+		<property name="authenticationCachingEnabled" value="false" /> <!-- 认证信息缓存，默认关闭 -->
+		<property name="authenticationCacheName" value="SHIRO_AUTHENTICATION_CACHE" /><!-- 认证信息缓存名 -->
+		<property name="authorizationCachingEnabled" value="true" /><!-- 授权信息缓存，默认开启 -->
+		<property name="authorizationCacheName" value="SHIRO_AUTHORIZATION_CACHE" /><!-- 授权信息缓存名 -->
+		<property name="casServerRolesAttributeName" value="roles" /><!-- cas服务端返回的principal中角色属性名 -->
+		<property name="casServerPermissionsAttributeName" value="permissions" /><!-- cas服务端返回的principal中权限属性名 -->
+	</bean>
+	
+	<!-- 基于非cas实现的realm 
+	<bean id="userRealm" class="com.asiainfo.walk.order.system.security.realm.UserRealm">
+		<property name="userService" ref="userService"/>
+		<property name="cachingEnabled" value="true" />
+		<property name="authenticationCachingEnabled" value="false" />
+		<property name="authenticationCacheName" value="SHIRO_AUTHENTICATION_CACHE" />
+		<property name="authorizationCachingEnabled" value="true" />
+		<property name="authorizationCacheName" value="SHIRO_AUTHORIZATION_CACHE" />
+	</bean>
+	-->
+	
+	<!-- 会话ID生成器 -->
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+	<!-- 会话Cookie模板 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="sid" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="-1" />
+	</bean>
+
+	<!-- 会话DAO -->
+	<bean id="sessionDAO" class="org.walkframework.shiro.session.BaseSessionDAO">
+		<property name="activeSessionsCacheName" value="SHIRO_ACTIVE_SESSION_CACHE" />
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
+	</bean>
+
+	<!-- 会话验证调度器 -->
+	<bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+		<property name="sessionValidationInterval" value="300000" /><!-- 会话检查调度器周期，单位毫秒 -->
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 会话管理器 -->
+	<bean id="sessionManager" class="org.walkframework.shiro.web.session.mgt.ShiroWebSessionManager">
+		<property name="globalSessionTimeout" value="${sessionTimeout}" /><!-- 会话的全局过期时间（毫秒为单位），默认30分钟 -->
+		<property name="deleteInvalidSessions" value="true" />			 <!-- 删除无效/过期的会话 -->
+		<property name="sessionValidationSchedulerEnabled" value="true" /><!-- 开启会话调度器 -->
+		<property name="sessionValidationScheduler" ref="sessionValidationScheduler" />
+		<property name="sessionDAO" ref="sessionDAO" />
+		<property name="sessionIdCookieEnabled" value="true" />
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+	</bean>
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realms">
+			<list>
+				<ref bean="casRealm" />
+				<!-- <ref bean="userRealm" />-->
+			</list>
+		</property>
+		<property name="sessionManager" ref="sessionManager" />
+		<property name="cacheManager" ref="shiroCacheManager" />
+	</bean>
+
+	<!-- 设置安全管理器-->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+		<property name="arguments" ref="securityManager" />
+	</bean>
+   
+	<!-- 基于cas的认证过滤器 -->
+	<bean id="casAuthFilter" class="org.walkframework.shiro.web.filter.authc.CasAuthFilter">
+        <property name="casRealm" ref="casRealm"/>
+        <property name="defaultCasServer" value="${shiro.casServer}"/>				<!--默认的CAS服务端地址 -->
+        <property name="defaultCasServerPath" value="${shiro.casServerPath}"/>		<!--默认的CAS服务端登录地址 -->
+        <property name="defaultCasClientService" value="${shiro.casClientService}"/><!--默认的CAS客户端地址 -->
+        <!-- CAS服务端地址列表，可做分省配置，如下为示例配置
+        <property name="casSpecialParameterName" value="_specCas" />
+		<property name="casServers">
+			<util:map>
+				<entry key="GZCU" value="${shiro.GZCU.casServer}" />
+			</util:map>
+		</property>
+		<property name="casServerPaths">
+			<util:map>
+				<entry key="GZCU" value="${shiro.GZCU.casServerPath}" />
+			</util:map>
+		</property>
+		<property name="casClientServices">
+			<util:map>
+				<entry key="GZCU" value="${shiro.GZCU.casClientService}" />
+			</util:map>
+		</property>
+		-->
+		<property name="casClientLoginPath" value="/caslogin"/>						<!--CAS客户端登录路径 -->
+        <property name="failureUrl" value="/component/error/loginFailure.html"/>	<!-- 认证失败跳转页面 -->
+    </bean>
+    
+
+	
+	<!-- Shiro Spring AOP权限注解 -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+    
+	<!-- Shiro生命周期处理器 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>

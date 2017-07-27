@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:beans="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd"
+	default-autowire="byName">
+	
+	<!-- JNDI方式获取数据源-->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiName" value="java:comp/env/ds_cc_cocktail"/>
+	</bean>
+	
+	<!-- Mybatis 设置缓存管理器
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="org.walkframework.batis.cache.CacheManager.setCacheManager" />
+		<property name="arguments" ref="springCacheManager" />
+	</bean>
+	 -->
+    
+    <!-- mybatis SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+	    <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />  
+	    <property name="dataSource" ref="dataSource" />  
+	    <!-- 自动扫描mapping.xml文件 -->  
+        <property name="mapperLocations" value="classpath:sql/mysql/*.xml"></property>
+	</bean>
+    
+    <!-- DAO接口所在包名，Spring会自动查找其下的类   
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.cc.cocktail.dao" />  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>
+    -->
+    
+    <!-- SqlSessionTemplate -->
+    <bean id="SqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    
+    <!-- 基于mybatis sqlSession实现的通用dao工具 -->
+    <bean id="sqlSessionDao" class="com.cc.cocktail.mvc.dao.BaseSqlSessionDao">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    
+	<!-- Spring 事务管理器 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+        <property name="dataSource" ref="dataSource"/> 
+    </bean> 
+	
+	<!-- 引入事务配置 -->
+	<beans:import resource="classpath:ds/transaction.xml"/>
+	
+</beans>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:beans="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd"
+	default-autowire="byName">
+	<!-- MVC配置 start********************************************************************************************************* -->
+	<!-- 启用Spring MVC 注解 -->
+	<!-- 启用注解驱动 -->
+    <mvc:annotation-driven/>
+    
+    <context:annotation-config />
+    
+	<!-- 自动搜索需要注入的类 -->
+	<context:component-scan base-package="com.cc.cocktail.mvc.controller" />
+	<context:component-scan base-package="com.cc.cocktail.mvc.service" />
+	
+    <!-- 添加参数类型解决器 -->
+    <bean id="requestMappingHandlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="synchronizeOnSession" value="true"/><!--线程安全的访问session-->
+	</bean>
+    
+    <!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 本地化拦截器 -->
+	    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+	        <property name="paramName" value="language"/>
+	    </bean>
+	</mvc:interceptors>
+	
+	
+    
+	<!-- 对静态资源文件的访问配置，可访问pages目录下的静态资源，但不允许直接访问jsp-->
+	<mvc:resources mapping="/resource/**" location="/resource/" cache-period="31556926"/>
+	<mvc:resources mapping="/pages/**" location="/pages/" cache-period="31556926"/>
+	
+	<!-- 对转向页面的路径解析 prefix：前缀 suffix：后缀 -->
+	<bean p:prefix="/pages/" p:suffix=".jsp" class="org.springframework.web.servlet.view.InternalResourceViewResolver"/>
+	<!-- 文件上传-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--one of the properties available;the maximum upload size in bytes 100M-->
+        <property name="maxUploadSize" value="104857600"/>
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="maxInMemorySize" value="4096"/>
+	</bean>
+	
+	<!-- MVC配置 end********************************************************************************************************* -->
+    
+	<!-- 安全框架Shiro Spring AOP权限注解 
+	<aop:config proxy-target-class="true"></aop:config>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"/>
+	</bean>
+	-->
+    <!-- Shiro生命周期处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    
+
+</beans>

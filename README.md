@@ -1,7 +1,8 @@
 # cocktail
 A webapp about cocktails.
 
-I'm a graduate of 2017, just started my first job as a programmer a month ago. It's my first webapp practice. Any advice and suggestions will be greatly appreciated. Thank you. 
+I just started my first job as a programmer at July 2017. It's my first webapp practice. 
+Any advice or suggestions will be greatly appreciated. Thank you. 
 
 Frontend: Jquery + Bootstrap
 

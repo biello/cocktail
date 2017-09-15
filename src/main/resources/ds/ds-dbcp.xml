@@ -16,13 +16,6 @@
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 	    <property name="jndiName" value="java:comp/env/ds_cc_cocktail"/>
 	</bean>
-	
-	<!-- Mybatis 设置缓存管理器
-	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="staticMethod" value="org.walkframework.batis.cache.CacheManager.setCacheManager" />
-		<property name="arguments" ref="springCacheManager" />
-	</bean>
-	 -->
     
     <!-- mybatis SqlSessionFactory -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  

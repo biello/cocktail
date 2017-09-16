@@ -2,9 +2,8 @@ package com.cc.cocktail.mvc.service.base;
 
 import javax.annotation.Resource;
 
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
-
-import com.cc.cocktail.mvc.dao.BaseSqlSessionDao;
 
 
 /**   
@@ -17,10 +16,8 @@ import com.cc.cocktail.mvc.dao.BaseSqlSessionDao;
 @Service("baseService")
 public class BaseService {
 
-	@Resource(name = "sqlSessionDao")
-	private BaseSqlSessionDao dao;
+	@Resource(name = "SqlSessionTemplate")
+	protected SqlSessionTemplate dao;
 	
-	public String getNameById(int id) {
-		return dao.getSqlSession().selectOne("testSQL.queryNameById", id);
-	}
+	
 }

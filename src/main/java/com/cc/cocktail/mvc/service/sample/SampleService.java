@@ -1,11 +1,7 @@
 package com.cc.cocktail.mvc.service.sample;
 
-import javax.annotation.Resource;
-
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
-import com.cc.cocktail.mvc.dao.BaseSqlSessionDao;
 import com.cc.cocktail.mvc.service.base.BaseService;
 
 /**   
@@ -18,8 +14,6 @@ import com.cc.cocktail.mvc.service.base.BaseService;
 @Service("sampleService")
 public class SampleService extends BaseService {
 	
-	@Resource(name = "SqlSessionTemplate")
-	private SqlSessionTemplate dao;
 	
 	public Object getSampleData() {
 		return "sample";

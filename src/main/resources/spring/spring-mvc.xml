@@ -21,6 +21,7 @@
 	<!-- 自动搜索需要注入的类 -->
 	<context:component-scan base-package="com.cc.cocktail.mvc.controller" />
 	<context:component-scan base-package="com.cc.cocktail.mvc.service" />
+	<context:component-scan base-package="com.cc.cocktail.mvc.dao" />
 	
     <!-- 添加参数类型解决器 -->
     <bean id="requestMappingHandlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
@@ -59,8 +60,8 @@
 		<property name="securityManager" ref="securityManager"/>
 	</bean>
 	-->
-    <!-- Shiro生命周期处理器 -->
+    <!-- Shiro生命周期处理器 
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
-    
+    -->
 
 </beans>

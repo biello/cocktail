@@ -5,6 +5,8 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
+import com.cc.cocktail.mvc.dao.BaseSqlSessionDao;
+
 
 /**   
 * @Type: BaseService.java 
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
 @Service("baseService")
 public class BaseService {
 
-	@Resource(name = "SqlSessionTemplate")
-	protected SqlSessionTemplate dao;
+	@Resource(name = "sqlSessionDao")
+	protected BaseSqlSessionDao dao;
 	
 	
 }

@@ -97,7 +97,7 @@
 	    <version>3.3.0</version>
 	</dependency>
     
-    <!-- shiro安全框架 -->
+    <!-- shiro安全框架
 	<dependency>
 	    <groupId>org.apache.shiro</groupId>
 	    <artifactId>shiro-aspectj</artifactId>
@@ -133,33 +133,39 @@
 	    <artifactId>shiro-guice</artifactId>
 	    <version>1.2.4</version>
 	</dependency>
-    
+     -->
+     
     <!-- log4j -->
 	<dependency>
 	    <groupId>log4j</groupId>
 	    <artifactId>log4j</artifactId>
 	    <version>1.2.17</version>
-	    <scope>provided</scope>
-	</dependency>
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>1.7.25</version>
-	    <scope>provided</scope>
 	</dependency>
 	<dependency>
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-log4j12</artifactId>
-	    <version>1.7.21</version>
-	    <scope>provided</scope>
+	    <version>1.7.6</version>
+	</dependency> 
+	
+	<!-- slf4j和 logback -->
+	<dependency>  
+	    <groupId>org.slf4j</groupId>  
+	    <artifactId>jcl-over-slf4j</artifactId>  
+	    <version>1.7.6</version>  
+	</dependency>
+	<!-- <dependency>  
+	    <groupId>org.logback-extensions</groupId>  
+	    <artifactId>logback-ext-spring</artifactId>  
+	    <version>0.1.2</version>  
+	</dependency> -->
+	<dependency>
+	  <groupId>ch.qos.logback</groupId>
+	  <artifactId>logback-classic</artifactId>
+	  <version>1.0.13</version>
 	</dependency>
 	
+	
 	<!-- springMVC文件上传依赖 -->
-	<dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-    </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
@@ -179,7 +185,17 @@
       <artifactId>mysql-connector-java</artifactId>  
       <version>5.1.42</version>  
 	</dependency>
+	
+	<!-- jstl -->
+	<dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+	</dependency>
+
   </dependencies>
+  
+  
   
   <build>
     <finalName>cocktail</finalName>

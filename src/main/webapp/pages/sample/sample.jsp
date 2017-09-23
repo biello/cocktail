@@ -3,10 +3,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<%@ include file="/pages/common/base.jsp"%>
+<title>示例页面</title>
 </head>
 <body>
-示例页面，返回的数据为：${data}
+	
+	${ctx}<br>
+	Mysql返回的数据为：${data}
 </body>
 </html>

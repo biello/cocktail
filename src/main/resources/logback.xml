@@ -57,6 +57,6 @@
     </root>
     
     <logger name="com.cc.cocktail" level="DEBUG"/>
-    <logger name="org.springframework" level=WARN/>
+    <logger name="org.springframework" level="WARN"/>
     
 </configuration>
